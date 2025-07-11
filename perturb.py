@@ -1,6 +1,6 @@
 import torch
 
-def perturb_sparse(C, ratio=0.05, max_change=3, size_threshold=1e6):
+def perturb_sparse(C, ratio=0.05, max_change=3, size_threshold=100):
     """
     Perturb a sparse-like matrix C by randomly modifying a fraction of its elements.
     Automatically uses GPU if:
@@ -67,8 +67,9 @@ def perturb_l0(C, X, ratio=0.1, num_perturb=None, large_value=1e9, size_threshol
         torch.Tensor: Perturbed matrix (same device as C).
     """
 
+    n, m = C.shape
     orig_device = C.device
-    if torch.cuda.is_available() and C.shape[0] > size_threshold:
+    if torch.cuda.is_available() and n > size_threshold:
         device = torch.device('cuda')
     else:
         device = orig_device
